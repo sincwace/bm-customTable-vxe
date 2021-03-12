@@ -12,7 +12,7 @@ npm run dev
 > 这是一个用来设计VXE表格的插件
 
 # 使用步骤
-npm install
+npm install bm-customTable-vxe -s
 
 # 运行方式
 npm run dev

@@ -23,6 +23,7 @@ import CunstomTableVxe from 'components/customTable-vxe'
 components: { CunstomTableVxe }
 
 # html模板中
-<CunstomTableVxe :requestConfigUrl="'http://172.16.1.92:8082/test/getData'"
-                 :requestDataUrl="'http://172.16.1.92:8082/test/getApiData'"></CunstomTableVxe>
+
+"<CunstomTableVxe :requestConfigUrl="'http://172.16.1.92:8082/test/getData'"
+                  :requestDataUrl="'http://172.16.1.92:8082/test/getApiData'"></CunstomTableVxe>"
 

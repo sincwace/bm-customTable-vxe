@@ -115,13 +115,72 @@
 										<el-radio :label="'inner'">内边框</el-radio>
 									</el-radio-group>
 								</el-form-item>
+
 								<el-form-item label="表头部高度:">
 									<el-input type="number"
-											  v-model="form.table.header.height" @change="headerHeightChange"></el-input>
+											  v-model="form.table.header.height"
+											  @change="headerHeightChange"></el-input>
 								</el-form-item>
 								<el-form-item label="表头字体大小:">
 									<el-input type="number"
-											  v-model="form.table.header.fz" @change="headerFzChange"></el-input>
+											  v-model="form.table.header.fz"
+											  @change="headerFzChange"></el-input>
+								</el-form-item>
+								<el-form-item label="表头背景颜色:">
+									<el-input v-model="form.table.header.bgc"
+											  disabled
+											  size="medium">
+										<el-color-picker v-model="form.table.header.bgc"
+														 slot="append"
+														 @change="headerBgcChange"></el-color-picker>
+									</el-input>
+								</el-form-item>
+								<el-form-item label="表头字体颜色:">
+									<el-input v-model="form.table.header.fc"
+											  disabled
+											  size="medium">
+										<el-color-picker v-model="form.table.header.fc"
+														 slot="append"
+														 @change="headerfcChange"></el-color-picker>
+									</el-input>
+								</el-form-item>
+
+								<el-form-item label="行高度:">
+									<el-input type="number"
+											  v-model="form.table.row.height"
+											  @change="rowHeightChange"></el-input>
+								</el-form-item>
+								<el-form-item label="行字体大小:">
+									<el-input type="number"
+											  v-model="form.table.row.fz"
+											  @change="rowFzChange"></el-input>
+								</el-form-item>
+								<el-form-item label="行背景颜色:">
+									<el-input v-model="form.table.row.bgc"
+											  disabled
+											  size="medium">
+										<el-color-picker v-model="form.table.row.bgc"
+														 slot="append"
+														 @change="rowBgcChange"></el-color-picker>
+									</el-input>
+								</el-form-item>
+								<el-form-item label="行字体颜色:">
+									<el-input v-model="form.table.row.fc"
+											  disabled
+											  size="medium">
+										<el-color-picker v-model="form.table.row.fc"
+														 slot="append"
+														 @change="rowfcChange"></el-color-picker>
+									</el-input>
+								</el-form-item>
+								<el-form-item label="斑马纹颜色:">
+									<el-input v-model="form.table.row.stripeColor"
+											  disabled
+											  size="medium">
+										<el-color-picker v-model="form.table.row.stripeColor"
+														 slot="append"
+														 @change="rowStripeColorChange"></el-color-picker>
+									</el-input>
 								</el-form-item>
 
 								<!-- 高级选项 -->
@@ -136,7 +195,8 @@
 									</el-form-item>
 									<el-form-item label="选择操作列按钮:"
 												  v-if="form.table.isHaveOperation">
-										<el-checkbox-group v-model="form.table.buttons" @change="buttonsChange">
+										<el-checkbox-group v-model="form.table.buttons"
+														   @change="buttonsChange">
 											<el-checkbox v-for="(i, index) in btns"
 														 :key="'btns' + index"
 														 :label="i">{{i.name}}</el-checkbox>
@@ -270,6 +330,26 @@
 									</el-form-item>
 								</div>
 							</el-collapse-item>
+
+							<el-collapse-item title="分页编辑"
+											  :name="4"
+											  :disabled="collapseDisabled">
+								<el-form-item label="是否有分页:">
+									<el-radio-group v-model="form.pagination.isHave"
+													size="mini">
+										<el-radio :label="true">是</el-radio>
+										<el-radio :label="false">否</el-radio>
+									</el-radio-group>
+								</el-form-item>
+								<el-form-item label="选择功能:">
+									<el-checkbox-group v-model="form.pagination.layouts"
+													   @change="layoutsChange">
+										<el-checkbox v-for="(i, index) in form.pagination.layoutChecks"
+													 :key="'layoutChecks' + index"
+													 :label="i">{{i.name}}</el-checkbox>
+									</el-checkbox-group>
+								</el-form-item>
+							</el-collapse-item>
 						</el-collapse>
 					</el-form>
 				</div>
@@ -364,6 +444,14 @@
 						</vxe-table-column>
 					</vxe-table>
 
+					<div class="mt20 tc" v-if="form.pagination.isHave">
+						<el-pagination :page-sizes="[10, 50, 100, 200]"
+									   :page-size="10"
+									   :layout="form.pagination.layout"
+									   :total="5">
+						</el-pagination>
+					</div>
+
 					<div class="menu mt20 tc">
 						<el-button type="primary"
 								   @click="resetTable"
@@ -452,9 +540,9 @@ export default {
 		return {
 			interfaceUrl: '172.16.1.92:8082/test/getApiData',
 			screenDisabled: true,
-			collapseDisabled: false,
+			collapseDisabled: true,
 			tableType: {
-				select: 1,
+				select: 0,
 				options: [
 					{ label: '普通表格', value: 0, disabled: false },
 					{ label: '高级表格', value: 1, disabled: false },
@@ -501,7 +589,16 @@ export default {
 					checkType: 0,
 					header: {
 						height: 50,
-						fz: 14
+						fz: 14,
+						bgc: '#f8f8f9',
+						fc: '#606266'
+					},
+					row: {
+						height: 50,
+						fz: 14,
+						bgc: '#fff',
+						fc: '#606266',
+						stripeColor: '#fafafa'
 					},
 					isHaveOperation: false,
 					buttons: []
@@ -534,9 +631,19 @@ export default {
 					},
 					resizable: true,
 					fixed: ''
+				},
+				pagination: {
+					isHave: false,
+					layoutChecks: [
+						{ name: '显示总数', value: 'total' },
+						{ name: '每页条数', value: 'sizes' },
+						{ name: '直接前往', value: 'jumper' }
+					],
+					layouts: [],
+					layout: 'prev, pager, next'
 				}
 			},
-			activeNames: [1, 2, 3],
+			activeNames: [],
 			tableColumn: [],
 			tableColumn2: [],
 			screenList: [],
@@ -713,7 +820,9 @@ export default {
 
 		// 保存按钮信息
 		saveBtn() {
-			this.form.table.buttons[this.btnsDialog.index].disabledConditions = this.btnsDialog.disabledConditions
+			this.form.table.buttons[
+				this.btnsDialog.index
+			].disabledConditions = this.btnsDialog.disabledConditions
 			this.btnsDialog.show = false
 			console.log(this.form.table.buttons)
 		},
@@ -855,8 +964,12 @@ export default {
 		// 列选择
 		choseColumn(val) {
 			// console.log(val)
+			let list = []
+			this.tableType.select
+				? (list = this.tableColumn2)
+				: (list = this.tableColumn)
 			this.selectedColumn = val.$columnIndex
-			if (this.tableColumn[val.$columnIndex].data) {
+			if (list[val.$columnIndex].data) {
 				this.form.column = this.$deepCopy(
 					this.tableColumn[val.$columnIndex].data
 				)
@@ -869,7 +982,7 @@ export default {
 					val.column.headerAlign || 'left'
 				this.form.column.align.select = val.column.align || 'left'
 				this.form.column.resizable = val.column.resizable || true
-				this.form.column.fixed = val.column.fixed || false
+				this.form.column.fixed = val.column.fixed || ''
 			}
 		},
 
@@ -919,7 +1032,20 @@ export default {
 					border: 'full',
 					checkType: 0,
 					isHaveOperation: false,
-					buttons: []
+					buttons: [],
+					header: {
+						height: 50,
+						fz: 14,
+						bgc: '#f8f8f9',
+						fc: '#606266'
+					},
+					row: {
+						height: 50,
+						fz: 14,
+						bgc: '#fff',
+						fc: '#606266',
+						stripeColor: '#fafafa'
+					}
 				},
 				column: {
 					title: '',
@@ -948,13 +1074,24 @@ export default {
 						keys: []
 					},
 					resizable: true,
-					fixed: false
+					fixed: ''
+				},
+				pagination: {
+					isHave: false,
+					layoutChecks: [
+						{ name: '显示总数', value: 'total' },
+						{ name: '每页条数', value: 'sizes' },
+						{ name: '直接前往', value: 'jumper' }
+					],
+					layouts: [],
+					layout: 'prev, pager, next'
 				}
 			}
 			this.selectedColumn = ''
 			this.screenList = []
 			this.tableData = []
 			this.tableColumn = []
+			this.tableColumn2 = []
 		},
 
 		// 预览当前表格
@@ -965,9 +1102,13 @@ export default {
 		// 预览代码
 		createJson() {
 			let obj = {
+				tableType: this.tableType.select,
 				screenList: this.screenList,
-				tableColumn: this.tableColumn,
-				tableConfig: this.form.table
+				tableColumn: this.tableType.select
+					? this.tableColumn2
+					: this.tableColumn,
+				tableConfig: this.form.table,
+				pagination: this.form.pagination
 			}
 			this.formJson = JSON.stringify(obj, null, 4)
 			this.createJsonDialog = true
@@ -991,9 +1132,13 @@ export default {
 		// 发送配置去数据库
 		sendConfig() {
 			let config = {
-				table: this.form.table,
-				column: this.tableColumn,
-				screen: this.screenList
+				tableType: this.tableType.select,
+				column: this.tableType.select
+					? this.tableColumn2
+					: this.tableColumn,
+				screen: this.screenList,
+				tableConfig: this.form.table,
+				pagination: this.form.pagination
 			}
 			axios
 				.post('http://172.16.1.92:8082/test/saveData', {
@@ -1074,7 +1219,7 @@ export default {
 							})
 							this.collapseDisabled = false
 							this.screenDisabled = false
-							this.activeNames = [1, 2, 3]
+							this.activeNames = [1, 2, 3, 4]
 						} else {
 							this.$message({
 								type: 'warning',
@@ -1092,22 +1237,191 @@ export default {
 		},
 
 		// 头部高度
-		headerHeightChange() {
+		headerHeightChange(val) {
 			var hc = document.getElementsByClassName('vxe-header--column')
-			console.log(hc)
+			hc.forEach(e => {
+				e.style.height = val + 'px'
+				e.style.lineHeight = val + 'px'
+			})
+			switch (this.tableType.select) {
+				case 0:
+					this.$refs.xTable1.refreshColumn()
+					break
+				case 1:
+					this.$refs.xTable2.refreshColumn()
+					break
+				default:
+					break
+			}
 		},
 
 		// 头部字体
-		headerFzChange() {
+		headerFzChange(val) {
+			var hc = document.getElementsByClassName('vxe-header--row')
+			hc.forEach(e => {
+				e.style.fontSize = val + 'px'
+			})
+		},
 
+		// 头部背景色
+		headerBgcChange(val) {
+			var hc = document.getElementsByClassName(
+				'vxe-table--header-wrapper'
+			)
+			hc.forEach(e => {
+				e.style.backgroundColor = val
+			})
+		},
+
+		// 头部字体颜色
+		headerfcChange(val) {
+			var hc = document.getElementsByClassName('vxe-header--row')
+			hc.forEach(e => {
+				e.style.color = val
+			})
+		},
+
+		// 行高度
+		rowHeightChange(val) {
+			var hc = document.getElementsByClassName('vxe-body--row')
+			hc.forEach(e => {
+				e.style.height = val + 'px'
+				e.style.lineHeight = val + 'px'
+			})
+			switch (this.tableType.select) {
+				case 0:
+					this.$refs.xTable1.refreshColumn()
+					break
+				case 1:
+					this.$refs.xTable2.refreshColumn()
+					break
+				default:
+					break
+			}
+		},
+
+		// 行字体
+		rowFzChange(val) {
+			var hc = document.getElementsByClassName('vxe-body--row')
+			hc.forEach(e => {
+				e.style.fontSize = val + 'px'
+			})
+		},
+
+		// 行背景色
+		rowBgcChange(val) {
+			var hc = document.getElementsByClassName('vxe-body--row')
+			hc.forEach(e => {
+				let list = e.getAttribute('class').split(' ')
+				if (list.indexOf('row--stripe') === -1) {
+					e.style.backgroundColor = val
+				}
+			})
+		},
+
+		// 行字体颜色
+		rowfcChange(val) {
+			var hc = document.getElementsByClassName('vxe-body--row')
+			hc.forEach(e => {
+				e.style.color = val
+			})
+		},
+
+		// 斑马纹颜色
+		rowStripeColorChange(val) {
+			var hc = document.getElementsByClassName('vxe-body--row')
+			hc.forEach(e => {
+				let list = e.getAttribute('class').split(' ')
+				if (list.indexOf('row--stripe') !== -1) {
+					e.style.backgroundColor = val
+				}
+			})
+		},
+
+		// 设置表格样式
+		setTableClass() {
+			this.$nextTick(() => {
+				var ha = document.getElementsByClassName('vxe-header--column')
+				var hb = document.getElementsByClassName('vxe-header--row')
+				var hc = document.getElementsByClassName(
+					'vxe-table--header-wrapper'
+				)
+				var line = document.getElementsByClassName('vxe-body--row')
+
+				ha.forEach(e => {
+					// 高
+					e.style.height = this.form.table.header.height + 'px'
+					e.style.lineHeight = this.form.table.header.height + 'px'
+				})
+				hb.forEach(e => {
+					// 字体
+					e.style.fontSize = this.form.table.header.fz + 'px'
+					e.style.color = this.form.table.header.fc
+				})
+				hc.forEach(e => {
+					// 背景色
+					e.style.backgroundColor = this.form.table.header.bgc
+				})
+
+				line.forEach(e => {
+					// 行
+					e.style.height = this.form.table.row.height + 'px'
+					e.style.lineHeight = this.form.table.row.height + 'px'
+					e.style.fontSize = this.form.table.row.fz + 'px'
+					let list = e.getAttribute('class').split(' ')
+					if (list.indexOf('row--stripe') === -1) {
+						e.style.backgroundColor = this.form.table.row.bgc
+					} else {
+						e.style.backgroundColor = this.form.table.row.stripeColor
+					}
+				})
+
+				switch (this.tableType.select) {
+					case 0:
+						this.$refs.xTable1.refreshColumn()
+						break
+					case 1:
+						this.$refs.xTable2.refreshColumn()
+						break
+					default:
+						break
+				}
+			})
+		},
+
+		// 分页功能监听
+		layoutsChange() {
+			let str = ['prev', 'pager', 'next']
+			if (this.form.pagination.layouts.length > 0) {
+				this.form.pagination.layouts.map(i => {
+					if (i.value === 'sizes') {
+						str.unshift(i.value)
+					} else {
+						str.push(i.value)
+					}
+				})
+			}
+			this.form.pagination.layout = str.join(',')
 		},
 
 		eval(data, index) {
-			console.log(data)
 			return eval(data)
 		}
 	},
-	created() {}
+	created() {},
+	watch: {
+		tableColumn(val) {
+			if (val.length > 0) {
+				this.setTableClass()
+			}
+		},
+
+		tableColumn2(val) {
+			if (val.length > 0) {
+				this.setTableClass()
+			}
+		}
+	}
 }
 </script>
 
@@ -1140,10 +1454,6 @@ export default {
 		height: 100%;
 		padding: 20px 10px;
 		border-right: 1px solid #efefef;
-		.active {
-			border: 3px solid blue;
-			box-sizing: border-box;
-		}
 		.vxe-table {
 			.vxe-header--column {
 				padding: 0;

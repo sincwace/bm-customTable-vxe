@@ -3,9 +3,12 @@
 > This is a plugin for designing VXE tables
 
 # install dependencies
-npm install bm-customTable-vxe -s
 
-# serve with hot reload at localhost:8080
+```shell
+npm install bm-customTable-vxe -s
+```
+
+# serve begin
 npm run dev
 
 
@@ -18,6 +21,7 @@ npm install bm-customTable-vxe -s
 npm run dev
 
 # 使用
+
 ```javascript
 import CunstomTableVxe from 'components/customTable-vxe'
 

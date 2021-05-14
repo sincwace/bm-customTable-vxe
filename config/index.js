@@ -21,10 +21,10 @@ module.exports = {
 	},
 
 	build: {
-		index: path.resolve(__dirname, '../dx-admin/index.html'),
-		assetsRoot: path.resolve(__dirname, '../dx-admin'),
+		index: path.resolve(__dirname, '../dist/index.html'),
+		assetsRoot: path.resolve(__dirname, '../dist'),
 		assetsSubDirectory: 'static',
-		assetsPublicPath: '/dx-admin/',
+		assetsPublicPath: '/',
 		productionSourceMap: true,
 		devtool: '#source-map',
 		productionGzip: false,

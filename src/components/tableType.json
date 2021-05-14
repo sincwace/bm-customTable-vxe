@@ -1,0 +1,35 @@
+{
+	"base": {
+		"screenList": [
+			{
+				"title": "筛选标题",
+				"width": 6,
+				"field": "字段名"
+			}
+		],
+		"tableColumn": [
+			{
+				"title": "选择",
+				"width": 80,
+				"type": "seq"
+			}
+		]
+	},
+
+	"chose": {
+		"screenList": [
+			{
+				"title": "筛选标题",
+				"width": 6,
+				"field": "字段名"
+			}
+		],
+		"tableColumn": [
+			{
+				"title": "选择",
+				"width": 80,
+				"type": "radio"
+			}
+		]
+	}
+}

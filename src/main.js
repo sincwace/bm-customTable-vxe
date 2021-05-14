@@ -11,13 +11,12 @@ import './assets/style/global.less'
 import 'vxe-table/lib/index.css' 
 import 'element-ui/lib/theme-chalk/index.css'
 
+// import bmCustomTableVxe from 'bm-customtable-vxe'
+import 'bm-customtable-vxe/lib/bm-customtable-vxe.less'
+// Vue.use(bmCustomTableVxe)
+
 Vue.use(VXETable)
 Vue.use(ElementUI, { size: 'mini'})
-
-Vue.prototype.$deepCopy = function(source) {
-    let stringify = JSON.stringify(source)
-    return JSON.parse(stringify)
-}
 
 new Vue({
 	render: h => h(App),
